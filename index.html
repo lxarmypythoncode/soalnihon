@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Ujian: Maru (○) atau Batsu (×) - Soal Bahasa Jepang</title>
+    <title>Ujian: Maru (○) atau Batsu (×) - 15 Soal</title>
     <style>
         * {
             box-sizing: border-box;
@@ -359,45 +359,45 @@
 <div class="quiz-container" id="quizApp">
     <div class="quiz-header">
         <h1>🌱 まる・ばつ テスト</h1>
-        <p>○ = 正しい / × = 誤り</p>
+        <p>○ = ただしい / × = あやまり</p>
     </div>
     <div class="info-panel">
         <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
         <div class="stats-row">
-            <span id="currentIdxDisplay">問題 1 / 20</span>
-            <span id="answeredStatus">回答: 0 / 20</span>
-            <button id="restartExamBtn" class="restart-btn">🔄 シャッフルして最初から</button>
+            <span id="currentIdxDisplay">もんだい 1 / 15</span>
+            <span id="answeredStatus">こたえ: 0 / 15</span>
+            <button id="restartExamBtn" class="restart-btn">🔄 シャッフルしてさいしょから</button>
         </div>
     </div>
     <div id="questionContainer"></div>
     <div class="nav-buttons">
-        <button class="nav-btn" id="prevBtn">◀ 前へ</button>
-        <button class="nav-btn nav-btn-primary" id="nextBtn">次へ ▶</button>
+        <button class="nav-btn" id="prevBtn">◀ まえへ</button>
+        <button class="nav-btn nav-btn-primary" id="nextBtn">つぎへ ▶</button>
     </div>
     <div class="submit-area">
-        <button class="submit-btn" id="submitQuizBtn">📋 採点 & 結果を見る</button>
+        <button class="submit-btn" id="submitQuizBtn">📋 さいてい & けっかをみる</button>
     </div>
 </div>
 
 <div id="resultModal" class="result-overlay">
     <div class="result-card">
-        <h2>📊 テスト結果</h2>
-        <div id="scoreDisplay" class="score-circle">0 / 20</div>
-        <p style="text-align:center; font-size:0.8rem;">各問の正解とインドネシア語訳</p>
+        <h2>📊 テストけっか</h2>
+        <div id="scoreDisplay" class="score-circle">0 / 15</div>
+        <p style="text-align:center; font-size:0.8rem;">かくもんのせいかいとインドネシアごやく</p>
         <ul id="resultDetailList" class="detail-list"></ul>
-        <button class="close-result" id="closeResultBtn">閉じる</button>
+        <button class="close-result" id="closeResultBtn">とじる</button>
     </div>
 </div>
 
 <script>
-    // ======================= マスターデータ (日本語のみ、翻訳は結果時のみ使用) =======================
+    // ======================= 15もん (しゃしんから ぜんぶひらがな) =======================
     const masterQuestions = [
         { text: "【11】しぜんかんきょう、かんきせんを まわして、しせつの なかを かんきする ことです。", correct: false, translation: "Ventilasi alami adalah mengalirkan udara dengan kipas. (SALAH: ventilasi alami bukan dengan kipas, melainkan aliran udara alami)" },
         { text: "【12】えんげいの しせつの なかでは、かんすい（みずやり）を しません。", correct: false, translation: "Di dalam fasilitas hortikultura tidak dilakukan penyiraman. (SALAH, penyiraman tetap diperlukan)" },
-        { text: "【13】たんとうがたの しせつえんげいの ハウス（はうす）は、やねが 1つです。", correct: true, translation: "Rumah kaca tipe single span memiliki satu atap. (BENAR)" },
+        { text: "【13】たんとうがたの しせつえんげいの ハウス（はうす）は、やねが ひとつです。", correct: true, translation: "Rumah kaca tipe single span memiliki satu atap. (BENAR)" },
         { text: "【14】しせつの なかでは、びょうきや がいちゅうが すぐに ひろがる ことが あります。", correct: true, translation: "Di dalam fasilitas, penyakit dan hama dapat menyebar dengan cepat. (BENAR)" },
         { text: "【15】マルチング（マルチ）は、つちの うえを プラスチックフィルムなどで おおう ことです。", correct: true, translation: "Mulsa adalah menutupi permukaan tanah dengan plastik atau bahan lain. (BENAR)" },
-        { text: "このようなメモをします。つながりたい情報を、メモするということです。", correct: false, translation: "Pernyataan tentang mencatat informasi tidak tepat dalam konteks pertanian. (SALAH)" },
+        { text: "このようなメモをします。つながりたいじょうほうを、メモするということです。", correct: false, translation: "Pernyataan tentang mencatat informasi tidak tepat dalam konteks pertanian. (SALAH)" },
         { text: "せいひょうは、ひょうにごをかくことです。", correct: false, translation: "Pernyataan keliru tentang memberi label. (SALAH)" },
         { text: "ひりょうは、つちにえいようをあたえるためにまくものです。", correct: true, translation: "Pupuk adalah sesuatu yang disebarkan untuk memberikan nutrisi ke tanah. (BENAR)" },
         { text: "たいひは、どじょうのちからをあげるために、つちにうめこむものです。", correct: true, translation: "Pupuk kandang dibenamkan ke tanah untuk meningkatkan kesuburan tanah. (BENAR)" },
@@ -406,13 +406,10 @@
         { text: "えきたいひりょうは、こどひりょうよりもこうりつがよいです。", correct: true, translation: "Pupuk cair lebih efisien daripada pupuk padat. (BENAR)" },
         { text: "さくもつをそだてるには、たねまきがひつようです。", correct: true, translation: "Untuk menanam tanaman, diperlukan penaburan benih. (BENAR)" },
         { text: "ハウスえんげいは、やさいをそだてるのにてきしています。", correct: true, translation: "Hortikultura rumah kaca cocok untuk menanam sayuran. (BENAR)" },
-        { text: "こどひりょうは、みずにとかしてからつかいます。", correct: false, translation: "Pupuk padat digunakan setelah dilarutkan dalam air. (SALAH, tidak selalu)" },
-        { text: "マルチングは雑草抑制と地温保持に効果がある。", correct: true, translation: "Mulsa efektif menekan gulma dan menjaga suhu tanah. (BENAR)" },
-        { text: "温室ハウスでは換気が不要である。", correct: false, translation: "Di rumah kaca, ventilasi tidak diperlukan. (SALAH, justru penting)" },
-        { text: "水耕栽培は土を使わない栽培方法である。", correct: true, translation: "Hidroponik adalah metode budidaya tanpa tanah. (BENAR)" },
-        { text: "有機農業では化学肥料を必ず大量に使用する。", correct: false, translation: "Pertanian organik harus menggunakan pupuk kimia dalam jumlah besar. (SALAH)" },
-        { text: "施設園芸では病害虫の予防が重要である。", correct: true, translation: "Dalam hortikultura fasilitas, pencegahan hama penyakit sangat penting. (BENAR)" }
+        { text: "こどひりょうは、みずにとかしてからつかいます。", correct: false, translation: "Pupuk padat digunakan setelah dilarutkan dalam air. (SALAH, tidak selalu)" }
     ];
+
+    const TOTAL_QUESTIONS = masterQuestions.length; // 15
 
     let currentQuestions = [];
     let userAnswers = [];
@@ -442,7 +439,7 @@
     function resetAndShuffle() {
         currentQuestions = masterQuestions.map(q => ({ ...q }));
         currentQuestions = shuffleArray(currentQuestions);
-        userAnswers = new Array(20).fill(null);
+        userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
         currentIndex = 0;
         renderCurrentQuestion();
         updateMetaInfo();
@@ -456,10 +453,10 @@
 
     function updateMetaInfo() {
         const answeredCount = userAnswers.filter(a => a !== null).length;
-        answeredStatusSpan.innerText = `回答: ${answeredCount} / 20`;
-        const percent = ((currentIndex + 1) / 20) * 100;
+        answeredStatusSpan.innerText = `こたえ: ${answeredCount} / ${TOTAL_QUESTIONS}`;
+        const percent = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100;
         progressFill.style.width = `${percent}%`;
-        currentIdxDisplay.innerText = `問題 ${currentIndex+1} / 20`;
+        currentIdxDisplay.innerText = `もんだい ${currentIndex+1} / ${TOTAL_QUESTIONS}`;
     }
 
     function escapeHtml(str) {
@@ -481,10 +478,10 @@
                 <div class="question-text">${escapeHtml(q.text)}</div>
                 <div class="options">
                     <button class="option-btn maru-btn" id="maruOptionBtn">
-                        <span>○</span> <span class="label">まる (Benar)</span>
+                        <span>○</span> <span class="label">まる (ただしい)</span>
                     </button>
                     <button class="option-btn batsu-btn" id="batsuOptionBtn">
-                        <span>×</span> <span class="label">ばつ (Salah)</span>
+                        <span>×</span> <span class="label">ばつ (あやまり)</span>
                     </button>
                 </div>
             </div>
@@ -521,7 +518,7 @@
     }
 
     function goNext() {
-        if (currentIndex < 19) {
+        if (currentIndex < TOTAL_QUESTIONS - 1) {
             currentIndex++;
             renderCurrentQuestion();
             updateMetaInfo();
@@ -542,21 +539,21 @@
             }
             if (isUserCorrect) correctCount++;
             
-            const userAnswerText = (userChoice === null) ? "⚠️ Tidak dijawab" : (userChoice === true ? "○ (Maru / Benar)" : "× (Batsu / Salah)");
-            const correctAnswerText = isCorrectAnswer ? "○ (Benar)" : "× (Salah)";
+            const userAnswerText = (userChoice === null) ? "⚠️ こたえなし" : (userChoice === true ? "○ (まる / ただしい)" : "× (ばつ / あやまり)");
+            const correctAnswerText = isCorrectAnswer ? "○ (ただしい)" : "× (あやまり)";
             const liClass = isUserCorrect ? 'correct' : 'wrong';
             const statusIcon = isUserCorrect ? '✅' : '❌';
             
             detailsHtml += `
                 <li class="${liClass}">
-                    <div class="soal-jepang">${statusIcon} Soal ${i+1}: ${escapeHtml(currentQuestions[i].text)}</div>
-                    <div style="font-size:0.75rem; margin-top:6px;">👤 Jawaban anda: ${userAnswerText} | Kunci: ${correctAnswerText}</div>
+                    <div class="soal-jepang">${statusIcon} もんだい ${i+1}: ${escapeHtml(currentQuestions[i].text)}</div>
+                    <div style="font-size:0.75rem; margin-top:6px;">👤 あなたのこたえ: ${userAnswerText} | せいかい: ${correctAnswerText}</div>
                     <div class="terjemahan">📖 ${escapeHtml(currentQuestions[i].translation)}</div>
                 </li>
             `;
         }
         
-        scoreDisplayDiv.innerHTML = `${correctCount} / 20<br><span style="font-size:0.9rem;">(${Math.round((correctCount/20)*100)}%)</span>`;
+        scoreDisplayDiv.innerHTML = `${correctCount} / ${TOTAL_QUESTIONS}<br><span style="font-size:0.9rem;">(${Math.round((correctCount/TOTAL_QUESTIONS)*100)}%)</span>`;
         resultDetailList.innerHTML = detailsHtml;
         resultModal.style.visibility = 'visible';
         resultModal.style.opacity = '1';
@@ -565,7 +562,7 @@
     function submitQuiz() {
         const unanswered = userAnswers.filter(a => a === null).length;
         if (unanswered > 0) {
-            if (confirm(`⚠️ ${unanswered}問 未回答です。未回答は「不正解」としてカウントされます。よろしいですか？`)) {
+            if (confirm(`⚠️ ${unanswered}もん みかいとうです。みかいとうは「ふせいかい」としてカウントされます。よろしいですか？`)) {
                 showResultWithTranslations();
             }
         } else {
@@ -583,7 +580,7 @@
         nextBtn.addEventListener('click', goNext);
         submitBtn.addEventListener('click', submitQuiz);
         restartBtn.addEventListener('click', () => {
-            if (confirm("問題をシャッフルして最初からやり直しますか？\n\nAcak ulang soal dan mulai dari awal?")) {
+            if (confirm("もんだいをシャッフルしてさいしょからやりなおしますか？")) {
                 resetAndShuffle();
             }
         });
@@ -596,7 +593,7 @@
     function init() {
         currentQuestions = masterQuestions.map(q => ({ ...q }));
         currentQuestions = shuffleArray(currentQuestions);
-        userAnswers = new Array(20).fill(null);
+        userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
         currentIndex = 0;
         renderCurrentQuestion();
         updateMetaInfo();
