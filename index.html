@@ -109,14 +109,14 @@
         }
 
         .question-text {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 500;
             background: #fefaf0;
             padding: 20px 18px;
             border-radius: 32px;
             box-shadow: inset 0 1px 2px #0001, 0 3px 6px rgba(0,0,0,0.03);
             margin-bottom: 28px;
-            line-height: 1.5;
+            line-height: 1.6;
             word-break: break-word;
             font-family: 'Noto Sans JP', system-ui;
             border: 1px solid #e9e0cc;
@@ -336,7 +336,7 @@
 
         @media (max-width: 550px) {
             .question-text {
-                font-size: 1.1rem;
+                font-size: 1rem;
                 padding: 14px 16px;
             }
             .option-btn {
@@ -390,26 +390,26 @@
 </div>
 
 <script>
-    // ======================= 15もん (しゃしんから ぜんぶひらがな) =======================
+    // ======================= 15 soal persis dari gambar =======================
     const masterQuestions = [
-        { text: "【11】しぜんかんきょう、かんきせんを まわして、しせつの なかを かんきする ことです。", correct: false, translation: "Ventilasi alami adalah mengalirkan udara dengan kipas. (SALAH: ventilasi alami bukan dengan kipas, melainkan aliran udara alami)" },
-        { text: "【12】えんげいの しせつの なかでは、かんすい（みずやり）を しません。", correct: false, translation: "Di dalam fasilitas hortikultura tidak dilakukan penyiraman. (SALAH, penyiraman tetap diperlukan)" },
-        { text: "【13】たんとうがたの しせつえんげいの ハウス（はうす）は、やねが ひとつです。", correct: true, translation: "Rumah kaca tipe single span memiliki satu atap. (BENAR)" },
-        { text: "【14】しせつの なかでは、びょうきや がいちゅうが すぐに ひろがる ことが あります。", correct: true, translation: "Di dalam fasilitas, penyakit dan hama dapat menyebar dengan cepat. (BENAR)" },
-        { text: "【15】マルチング（マルチ）は、つちの うえを プラスチックフィルムなどで おおう ことです。", correct: true, translation: "Mulsa adalah menutupi permukaan tanah dengan plastik atau bahan lain. (BENAR)" },
-        { text: "このようなメモをします。つながりたいじょうほうを、メモするということです。", correct: false, translation: "Pernyataan tentang mencatat informasi tidak tepat dalam konteks pertanian. (SALAH)" },
-        { text: "せいひょうは、ひょうにごをかくことです。", correct: false, translation: "Pernyataan keliru tentang memberi label. (SALAH)" },
-        { text: "ひりょうは、つちにえいようをあたえるためにまくものです。", correct: true, translation: "Pupuk adalah sesuatu yang disebarkan untuk memberikan nutrisi ke tanah. (BENAR)" },
-        { text: "たいひは、どじょうのちからをあげるために、つちにうめこむものです。", correct: true, translation: "Pupuk kandang dibenamkan ke tanah untuk meningkatkan kesuburan tanah. (BENAR)" },
-        { text: "のうぎょうでたいせつなのは、みずとたいようだけです。", correct: false, translation: "Yang penting dalam pertanian hanya air dan matahari. (SALAH, masih banyak faktor lain)" },
-        { text: "まつりは、ねんにいちどおこなうのうぎょうぎょうじです。", correct: false, translation: "Matsuri adalah acara pertanian yang dilakukan setahun sekali. (SALAH, tidak spesifik)" },
-        { text: "えきたいひりょうは、こどひりょうよりもこうりつがよいです。", correct: true, translation: "Pupuk cair lebih efisien daripada pupuk padat. (BENAR)" },
-        { text: "さくもつをそだてるには、たねまきがひつようです。", correct: true, translation: "Untuk menanam tanaman, diperlukan penaburan benih. (BENAR)" },
-        { text: "ハウスえんげいは、やさいをそだてるのにてきしています。", correct: true, translation: "Hortikultura rumah kaca cocok untuk menanam sayuran. (BENAR)" },
-        { text: "こどひりょうは、みずにとかしてからつかいます。", correct: false, translation: "Pupuk padat digunakan setelah dilarutkan dalam air. (SALAH, tidak selalu)" }
+        { text: "【1】こううんをします。つちがかたくなります。", correct: false, translation: "Membajak tanah, membuat tanah menjadi keras. (SALAH: membajak seharusnya membuat tanah gembur, bukan keras)" },
+        { text: "【2】せいしは、さくもつにみずをやることです。", correct: true, translation: "Irigasi adalah memberi air pada tanaman. (BENAR)" },
+        { text: "【3】せひは、ひりょうを つちにいれることです。", correct: true, translation: "Pemupukan adalah memasukkan pupuk ke dalam tanah. (BENAR)" },
+        { text: "【4】さかなかす(ぎょふん)は、かがくひりょうです。", correct: false, translation: "Ampas ikan (kotoran ikan) adalah pupuk kimia. (SALAH: ampas ikan adalah pupuk organik, bukan kimia)" },
+        { text: "【5】のうやくをつかったとき、きろくします。", correct: true, translation: "Jika menggunakan pestisida harus dicatat. (BENAR)" },
+        { text: "【6】きかいをつかうとき、さぎょうのまえに、つかいかたをよくりかいします。", correct: true, translation: "Sebelum menggunakan mesin, sebelum bekerja harus memahami cara penggunaannya dengan baik. (BENAR)" },
+        { text: "【7】キュウリ (きゅうり)は、ようけいさいるいです。", correct: false, translation: "Mentimun termasuk sayuran daun. (SALAH: mentimun termasuk sayuran buah, bukan sayuran daun)" },
+        { text: "【8】コチョウラン (こちょうらん)やシンビジュウム(しんびじゅうむ)は、ようラン (らん)です。", correct: true, translation: "Phalaenopsis dan Cymbidium adalah anggrek hias. (BENAR)" },
+        { text: "【9】ようえきさいばいは、さくもつをつちにうえます。", correct: false, translation: "Hidroponik menanam tanaman di tanah. (SALAH: hidroponik adalah budidaya tanpa tanah)" },
+        { text: "【10】ポット (ぽっと)いくびょうは、セルトレイ(せるとれい)にたねをまいて、なえをそだてます。", correct: true, translation: "Pembibitan pot dilakukan dengan menabur benih di tray sel untuk menumbuhkan bibit. (BENAR)" },
+        { text: "【11】しぜんかんきは、かんきせんをまわして、しせつのなかをかんきすることです。", correct: false, translation: "Ventilasi alami adalah mengalirkan udara dengan kipas. (SALAH: ventilasi alami menggunakan angin alami, bukan kipas)" },
+        { text: "【12】えんげいの しせつのなかでは、かんすい(みずやり)をしません。", correct: false, translation: "Di dalam fasilitas hortikultura tidak dilakukan penyiraman. (SALAH: penyiraman tetap diperlukan)" },
+        { text: "【13】たんとうがたのしせつえんげいの ハウス(はうす)は、 やねが 1つです。", correct: true, translation: "Rumah kaca tipe single span memiliki satu atap. (BENAR)" },
+        { text: "【14】しせつのなかでは、びょうきや がいちゅうがすぐにひろがることがあります。", correct: true, translation: "Di dalam fasilitas, penyakit dan hama dapat menyebar dengan cepat. (BENAR)" },
+        { text: "【15】マルチング(マルチ)は、つちのうえを プラスチックフィルムなどでおおうことです。", correct: true, translation: "Mulsa adalah menutupi permukaan tanah dengan plastik atau bahan lain. (BENAR)" }
     ];
 
-    const TOTAL_QUESTIONS = masterQuestions.length; // 15
+    const TOTAL_QUESTIONS = masterQuestions.length;
 
     let currentQuestions = [];
     let userAnswers = [];
