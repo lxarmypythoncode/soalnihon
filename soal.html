@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ujian: Maru (○) atau Batsu (×) - Penilaian Otomatis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans JP', 'Meiryo', 'Yu Gothic', Roboto, sans-serif;
+            background: #f1f8e9;
+            color: #1e2a2e;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        /* container utama */
+        .quiz-container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 20px 35px rgba(0, 20, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        /* header */
+        .quiz-header {
+            background: #2e7d32;
+            color: white;
+            padding: 20px 28px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .quiz-header p {
+            font-size: 0.95rem;
+            margin-top: 6px;
+            opacity: 0.9;
+        }
+
+        /* progress bar */
+        .progress-area {
+            padding: 12px 28px 0 28px;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e7e6;
+        }
+
+        .progress-bar-bg {
+            background: #e9ecef;
+            border-radius: 40px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #43a047;
+            width: 0%;
+            height: 100%;
+            transition: width 0.25s ease;
+            border-radius: 40px;
+        }
+
+        .counter {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #2c5e2a;
+            font-weight: 500;
+        }
+
+        /* soal card */
+        .question-card {
+            padding: 30px 30px 20px 30px;
+            border-bottom: 1px solid #eef2f0;
+        }
+
+        .question-text {
+            font-size: 1.55rem;
+            font-weight: 500;
+            background: #fef9e6;
+            padding: 20px 24px;
+            border-radius: 32px;
+            box-shadow: inset 0 1px 3px #0001, 0 2px 4px #0001;
+            margin-bottom: 30px;
+            line-height: 1.45;
+            word-break: break-word;
+            font-family: 'Noto Sans JP', 'Yu Gothic', monospace;
+        }
+
+        /* pilihan maru / batsu */
+        .options {
+            display: flex;
+            gap: 28px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0 10px;
+        }
+
+        .option-btn {
+            flex: 1;
+            min-width: 160px;
+            background: #fafafc;
+            border: 2px solid #cfdfd5;
+            border-radius: 80px;
+            padding: 18px 12px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .option-btn span {
+            font-size: 2.4rem;
+        }
+
+        .option-btn .label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .maru-btn {
+            border-color: #66bb6a;
+            color: #2e6b2f;
+        }
+
+        .batsu-btn {
+            border-color: #ef9a9a;
+            color: #b71c1c;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.01);
+            background: #f8fff4;
+            border-width: 2.5px;
+        }
+
+        .option-btn.maru-btn.selected-maru {
+            background: #c8e6c9;
+            border-color: #2e7d32;
+            box-shadow: 0 6px 12px rgba(46,125,50,0.2);
+        }
+
+        .option-btn.batsu-btn.selected-batsu {
+            background: #ffcdd2;
+            border-color: #c62828;
+            box-shadow: 0 6px 12px rgba(198,40,40,0.15);
+        }
+
+        /* navigasi */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px 30px;
+            background: #ffffff;
+        }
+
+        .nav-btn {
+            background: #e7e9e8;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1f3b2c;
+        }
+
+        .nav-btn-primary {
+            background: #2e7d32;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn-primary:hover {
+            background: #1b5e20;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* tombol submit */
+        .submit-area {
+            text-align: center;
+            padding: 10px 30px 35px;
+            border-top: 1px solid #e2e8e4;
+        }
+
+        .submit-btn {
+            background: #ffb74d;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 14px 28px;
+            border-radius: 60px;
+            width: 80%;
+            max-width: 280px;
+            color: #3c2a1f;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #e68a2e;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #e68a2e;
+        }
+
+        /* result modal / area */
+        .result-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+
+        .result-card {
+            background: white;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 48px;
+            padding: 28px 24px;
+            overflow-y: auto;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.3);
+        }
+
+        .result-card h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #c8e6c9;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .score-circle {
+            background: #2e7d32;
+            color: white;
+            font-size: 2.3rem;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 999px;
+            width: 130px;
+            margin: 10px auto;
+            padding: 18px 0;
+        }
+
+        .detail-list {
+            margin-top: 24px;
+            list-style: none;
+        }
+
+        .detail-list li {
+            background: #faf9f0;
+            margin: 12px 0;
+            padding: 14px 18px;
+            border-radius: 28px;
+            font-size: 0.85rem;
+            border-left: 10px solid #9e9e9e;
+        }
+
+        .detail-list li.correct {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .detail-list li.wrong {
+            border-left-color: #ef5350;
+            background: #ffebee;
+        }
+
+        .close-result {
+            background: #3c5a3a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* responsive */
+        @media (max-width: 620px) {
+            .question-text {
+                font-size: 1.2rem;
+                padding: 16px;
+            }
+            .option-btn {
+                min-width: 130px;
+                padding: 12px;
+            }
+            .option-btn span {
+                font-size: 1.8rem;
+            }
+            .quiz-header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-container" id="quizApp">
+    <div class="quiz-header">
+        <h1>🌱 施設園芸・自然環境 確認テスト</h1>
+        <p>各問を読み、「まる (○) : 正しい」 か 「ばつ (×) : 誤り」 を選んでください</p>
+    </div>
+    <div class="progress-area">
+        <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="counter"><span id="currentIdxDisplay">問題 1</span><span id="answeredStatus">回答済み: 0 / 20</span></div>
+    </div>
+    <div id="questionContainer">
+        <!-- dynamic content -->
+    </div>
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn">◀ 前の問題</button>
+        <button class="nav-btn nav-btn-primary" id="nextBtn">次の問題 ▶</button>
+    </div>
+    <div class="submit-area">
+        <button class="submit-btn" id="submitQuizBtn">📋 採点する / 結果を見る</button>
+    </div>
+</div>
+
+<div id="resultModal" class="result-overlay">
+    <div class="result-card">
+        <h2>📊 テスト結果</h2>
+        <div id="scoreDisplay" class="score-circle">0 / 20</div>
+        <p style="text-align:center; margin-top:5px;">★ 各問題の正解と解説(翻訳)付き ★</p>
+        <ul id="resultDetailList" class="detail-list"></ul>
+        <button class="close-result" id="closeResultBtn">閉じて確認を続ける</button>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 問題データ: 日本語の文章 (試験中に表示、翻訳なし) 
+    // 正解 (true: まる=正しい, false: ばつ=誤り)
+    // さらに採点結果表示用の "terjemahan" (インドネシア語解説/意味)
+    // 全20問 (画像から抽出、一部整合)
+    // --------------------------------------------------------------
+    const questions = [
+        { text: "【11】しぜんかんきょ、かんきせんを まわして、しせつの なかを かんきする ことです。", correct: false, translation: "Ventilasi alami adalah mengalirkan udara dengan kipas. (Pernyataan salah: ventilasi alami bukan dengan kipas, melainkan aliran udara alami)" },
+        { text: "【12】えんげいの しせつの なかでは、かんすい（みずやり）を しません。", correct: false, translation: "Di dalam fasilitas hortikultura tidak dilakukan penyiraman. (Salah, penyiraman tetap dilakukan)" },
+        { text: "【13】たんとうがたの しせつえんげいの ハウス（はうす）は、やねが 1つです。", correct: true, translation: "Rumah kaca tipe single span memiliki satu atap. (Benar)" },
+        { text: "【14】しせつの なかでは、びょうきや がいちゅうが すぐに ひろがる ことが あります。", correct: true, translation: "Di dalam fasilitas, penyakit dan hama dapat menyebar dengan cepat. (Benar)" },
+        { text: "【15】マルチング（マルチ）は、つちの うえを プラスチックフィルムなどで おおう ことです。", correct: true, translation: "Mulsa adalah menutupi permukaan tanah dengan plastik atau bahan lain. (Benar)" },
+        { text: "[11] このようなメモをします。つながりたい情報を、 Membolok tanoh memotul domatomi.", correct: false, translation: "Kalimat tidak jelas: pernyataan salah tentang 'membolok tanah' (frasa tidak sesuai dengan konsep pertanian)" },
+        { text: "[12] せいしば、ひょうをご ingasi odoloh memebri air poda to taro.", correct: false, translation: "Pernyataan keliru: ingasi bukan berarti memberi air pada tanaman" },
+        { text: "[13] せいしば、ひょうをご Pemupukon odoloh memosukkor pipuke kedalom tanoh.", correct: true, translation: "Pemupukan adalah memasukkan pupuk ke dalam tanah. (Benar, konsep pemupukan)" },
+        { text: "[14] さかながす（きょん）は、かんぐりとうです。 Ampos lion kotonoh odoloh pukke kedalom tanoh.", correct: false, translation: "Kalimat tidak tepat: ampos bukan berarti membenamkan ke tanah" },
+        { text: "[15] もれぎゅうごえ、さまであそぼ。 Sekelum mengpukkon memisi, sekurim kemerio nandu cidoti.", correct: false, translation: "Pernyataan tidak masuk akal (salah)" },
+        { text: "[16] まっずり（まっゆう）は、ようどの Pachoreopsis donggek hots.", correct: false, translation: "Makna tidak jelas, konsep tentang 'matsuri' salah." },
+        { text: "[17] よろえきりいばいは、さくちごと Hidroponik memotun tanoh ai tonoh.", correct: true, translation: "Hidroponik tanpa tanah / menggunakan air. (Benar)" },
+        { text: "[18] まっずり（まっゆう） Pachoreopsis donggek hots.", correct: false, translation: "Salah kaprah, tidak sesuai dengan pertanian." },
+        { text: "[19] ようえきりいばいは、さくちごと Hidroponik memotun tanoh ai tonoh.", correct: true, translation: "Hidroponik (budidaya tanpa tanah) menggunakan larutan nutrisi." },
+        { text: "[20] ふたご（ふたご） TADASHI AYAMARI", correct: false, translation: "Pernyataan 'tadashi ayamari' artinya 'betul/salah' campur aduk. Jawaban: Salah." },
+        { text: "マルチングは雑草抑制と地温保持に効果がある。", correct: true, translation: "Mulsa efektif menekan gulma dan menjaga suhu tanah. (Benar)" },
+        { text: "温室ハウスでは換気が不要である。", correct: false, translation: "Di rumah kaca, ventilasi tidak diperlukan. (Salah, justru penting)" },
+        { text: "水耕栽培は土を使わない栽培方法である。", correct: true, translation: "Hidroponik adalah metode budidaya tanpa tanah. (Benar)" },
+        { text: "有機農業では化学肥料を必ず大量に使用する。", correct: false, translation: "Pertanian organik harus menggunakan pupuk kimia dalam jumlah besar. (Salah)" },
+        { text: "施設園芸では病害虫の予防が重要である。", correct: true, translation: "Dalam hortikultura fasilitas, pencegahan hama penyakit sangat penting. (Benar)" }
+    ];
+
+    // memastikan total 20 soal (jika kurang tambah dummy, data diatas sdh 20)
+    // cek panjang
+    if (questions.length !== 20) console.warn("jumlah soal tidak 20, sekarang:", questions.length);
+    // pastikan 20 soal 
+    while(questions.length < 20) questions.push({ text: "追加ダミー: 適切な環境管理が重要である。", correct: true, translation: "Manajemen lingkungan yang tepat penting. (Benar)" });
+    if(questions.length > 20) questions.length = 20;
+
+    // state
+    let userAnswers = new Array(20).fill(null);   // null = belum dipilih, true = maru (anggap benar dipilih), false = batsu (salah)
+    // Note: userAnswers menyimpan pilihan user: true -> memilih MARU, false -> memilih BATSU
+    let currentIndex = 0;
+
+    // DOM elements
+    const questionContainer = document.getElementById('questionContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitQuizBtn');
+    const progressFill = document.getElementById('progressFill');
+    const currentIdxDisplay = document.getElementById('currentIdxDisplay');
+    const answeredStatusSpan = document.getElementById('answeredStatus');
+    const resultModal = document.getElementById('resultModal');
+    const closeResultBtn = document.getElementById('closeResultBtn');
+    const scoreDisplayDiv = document.getElementById('scoreDisplay');
+    const resultDetailList = document.getElementById('resultDetailList');
+
+    // Helper update progress bar & counter & answered status
+    function updateMetaInfo() {
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        answeredStatusSpan.innerText = `回答済み: ${answeredCount} / 20`;
+        const percent = ((currentIndex + 1) / 20) * 100;
+        progressFill.style.width = `${percent}%`;
+        currentIdxDisplay.innerText = `問題 ${currentIndex+1} / 20`;
+    }
+
+    // render current question
+    function renderCurrentQuestion() {
+        const q = questions[currentIndex];
+        const currentAnswer = userAnswers[currentIndex]; // true=maru dipilih, false=batsu dipilih, null=belum
+        const html = `
+            <div class="question-card">
+                <div class="question-text">${escapeHtml(q.text)}</div>
+                <div class="options">
+                    <button class="option-btn maru-btn" id="maruOptionBtn">
+                        <span>○</span> <span class="label">まる (Benar)</span>
+                    </button>
+                    <button class="option-btn batsu-btn" id="batsuOptionBtn">
+                        <span>×</span> <span class="label">ばつ (Salah)</span>
+                    </button>
+                </div>
+            </div>
+        `;
+        questionContainer.innerHTML = html;
+        
+        const maruBtn = document.getElementById('maruOptionBtn');
+        const batsuBtn = document.getElementById('batsuOptionBtn');
+        
+        // highlight existing selection
+        if (currentAnswer === true) {
+            maruBtn.classList.add('selected-maru');
+        } else if (currentAnswer === false) {
+            batsuBtn.classList.add('selected-batsu');
+        }
+        
+        // event handlers
+        maruBtn.addEventListener('click', () => {
+            // set answer true (MARU)
+            userAnswers[currentIndex] = true;
+            updateMetaInfo();
+            renderCurrentQuestion(); // re-render highlight
+        });
+        batsuBtn.addEventListener('click', () => {
+            userAnswers[currentIndex] = false;
+            updateMetaInfo();
+            renderCurrentQuestion();
+        });
+    }
+    
+    // simple escape
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+    
+    // navigasi
+    function goPrev() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+            updateMetaInfo();
+        }
+    }
+    
+    function goNext() {
+        if (currentIndex < 19) {
+            currentIndex++;
+            renderCurrentQuestion();
+            updateMetaInfo();
+        } else {
+            // jika sudah di akhir, bisa tetap atau beri notifikasi kecil
+            alert("これが最後の問題です。採点ボタンで結果を確認してください。");
+        }
+    }
+    
+    // hitung skor & tampilkan hasil + terjemahan untuk setiap soal
+    function showResultWithTranslations() {
+        let correctCount = 0;
+        const details = [];
+        for (let i = 0; i < questions.length; i++) {
+            const userChoice = userAnswers[i];
+            const isCorrectAnswer = questions[i].correct;
+            // user memilih true (maru) -> menjawab "benar"; false (batsu) -> menjawab "salah"
+            let isUserCorrect = false;
+            if (userChoice === null) {
+                isUserCorrect = false; // tidak menjawab dianggap salah
+            } else {
+                // jika user memilih MARU (true) dan jawaban benar is true -> betul
+                // jika user memilih BATSU (false) dan jawaban benar is false -> betul
+                isUserCorrect = (userChoice === isCorrectAnswer);
+            }
+            if (isUserCorrect) correctCount++;
+            
+            const statusText = isUserCorrect ? "✅ Benar" : "❌ Salah";
+            const userAnswerText = (userChoice === null) ? "Tidak dijawab" : (userChoice === true ? "○ (Maru / Benar)" : "× (Batsu / Salah)");
+            const correctAnswerText = isCorrectAnswer ? "○ (Benar)" : "× (Salah)";
+            // Tampilkan terjemahan/penjelasan
+            const translationText = questions[i].translation || "(Tidak ada terjemahan tambahan)";
+            
+            details.push({
+                number: i+1,
+                questionSnippet: questions[i].text.length > 80 ? questions[i].text.substring(0,77)+"…" : questions[i].text,
+                userAnswer: userAnswerText,
+                correctAnswer: correctAnswerText,
+                isCorrect: isUserCorrect,
+                translation: translationText
+            });
+        }
+        
+        const scorePercent = Math.round((correctCount / 20) * 100);
+        scoreDisplayDiv.innerHTML = `${correctCount} / 20<br><span style="font-size:1rem;">(${scorePercent}%)</span>`;
+        
+        // membuat list detail
+        let listHtml = '';
+        for (let d of details) {
+            const liClass = d.isCorrect ? 'correct' : 'wrong';
+            listHtml += `
+                <li class="${liClass}">
+                    <strong>Soal ${d.number}</strong> — ${escapeHtml(d.questionSnippet)}<br>
+                    <span style="font-size:0.8rem;">👤 Jawabanmu: ${d.userAnswer} | ✅ Kunci: ${d.correctAnswer}</span><br>
+                    <span style="font-size:0.75rem; display:inline-block; margin-top:6px; background:#fff3cf; padding:4px 8px; border-radius:20px;">📖 Terjemahan / Penjelasan: ${escapeHtml(d.translation)}</span>
+                </li>
+            `;
+        }
+        resultDetailList.innerHTML = listHtml;
+        resultModal.style.visibility = 'visible';
+        resultModal.style.opacity = '1';
+    }
+    
+    // menutup modal
+    function closeModal() {
+        resultModal.style.visibility = 'hidden';
+        resultModal.style.opacity = '0';
+    }
+    
+    // cek apakah semua sudah dijawab? tidak wajib, tetapi saat submit bisa warning jika ada yang kosong (opsional)
+    function submitQuiz() {
+        const unanswered = userAnswers.filter(a => a === null).length;
+        if (unanswered > 0) {
+            if (confirm(`⚠️ まだ ${unanswered} 問未回答です。採点すると未回答は「不正解」としてカウントされます。よろしいですか？\n\nApakah Anda yakin? Soal yang tidak dijawab akan dianggap salah.`)) {
+                showResultWithTranslations();
+            }
+        } else {
+            showResultWithTranslations();
+        }
+    }
+    
+    // event listeners
+    prevBtn.addEventListener('click', goPrev);
+    nextBtn.addEventListener('click', goNext);
+    submitBtn.addEventListener('click', submitQuiz);
+    closeResultBtn.addEventListener('click', closeModal);
+    // click outside? optional
+    resultModal.addEventListener('click', function(e) {
+        if (e.target === resultModal) closeModal();
+    });
+    
+    // init
+    function init() {
+        // reset jika perlu (optional)
+        userAnswers.fill(null);
+        currentIndex = 0;
+        renderCurrentQuestion();
+        updateMetaInfo();
+    }
+    
+    init();
+</script>
+</body>
+</html>
